@@ -61,3 +61,32 @@ int get_precision(const char *format, int *i, va_list list)
 	}
 	return (-1);
 }
+/**
+ * get_width - Checks for width sub-specifier
+ * @format: the main printf string
+ * @i: the current index to check in the format string
+ * @list: the list of arguments supplied to the printf function
+ *
+ * Return: width - the amount of padding required for the specifier
+ */
+int get_width(const char *format, int *i, va_list list)
+{
+	int width = 0;
+
+	if (format[*i] == *)
+	{
+		*i++;
+		return (va_arg(list, int));
+	}
+	else
+	{
+		while (format[*i] >= '0' && format[*i] <= '9')
+		{
+			width += format[*i] - '0';
+			width *= 10;
+			*i++;
+		}
+		width /= 10;
+	}
+	return (width);
+}
