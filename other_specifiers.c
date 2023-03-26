@@ -1,6 +1,6 @@
 #include "main.h"
 /**
- * get_flags - Checks for flag types in the format specifier
+ * get_flags - Checks for flag sub-specifiers in the format specifier
  * @format: the main printf string
  * @i: the current index to check in the format string
  *
@@ -25,4 +25,39 @@ int get_flags(const char *format, int *i)
 			sum += F_ZERO, found = 1, *i++;
 	}
 	return (sum);
+}
+/**
+ * get_precision - Checks for precision sub-specifiers
+ * @format: the main printf string
+ * @i: the current index to check in the format string
+ * @list: the list of arguments supplied to the printf function
+ *
+ * Return: -1 if the precision sub-specifier wasn't used
+ *	   precision - the precision (number) specified in the format string
+ */
+int get_precision(const char *format, int *i, va_list list)
+{
+	int precision = 0;
+
+	if (format[*i] == '.')
+	{
+		*i++;
+		if (format[*i] == '*')
+		{
+			*i++;
+			return (va_arg(list, int));
+		}
+		else
+		{
+			while (format[*i] >= '0' && format[*i] <= '9')
+			{
+				precision += format[*i];
+				*i++;
+				precision *= 10;
+			}
+			precision /= 10;
+			return (precision);
+		}
+	}
+	return (-1);
 }
