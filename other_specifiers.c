@@ -90,3 +90,20 @@ int get_width(const char *format, int *i, va_list list)
 	}
 	return (width);
 }
+/**
+ * get_size - checks for length modifiers for conversion specifiers
+ * @format: the main printf string
+ * @i: the current index to check in the format string
+ *
+ * Return: sum - the sum of numbers which indicate which modifier was found
+ */
+int get_size(const char *format, int *i)
+{
+	int sum = 0;
+
+	if (format[*i] == 'l')
+		sum += S_LONG;
+	else if (format[*i] == 'h')
+		sum += S_SHORT;
+	return (sum);
+}
