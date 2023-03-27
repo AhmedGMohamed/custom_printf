@@ -26,6 +26,7 @@ int get_flags(const char *format, int *i)
 			return (sum);
 		(*i)++;
 	}
+	return (sum);
 }
 /**
  * get_width - Checks for width sub-specifier
