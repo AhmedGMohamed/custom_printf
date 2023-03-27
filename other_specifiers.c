@@ -8,23 +8,53 @@
  */
 int get_flags(const char *format, int *i)
 {
-	int found = 1, sum = 0;
+	int sum = 0;
 
-	while (found)
+	while (*i)
 	{
-		found = 0;
 		if (format[*i] == '-')
-			sum += F_MINUS, found = 1, *i++;
+			sum += F_MINUS;
 		else if (format[*i] == '+')
-			sum += F_PLUS, found = 1, *i++;
+			sum += F_PLUS;
 		else if (format[*i] == ' ')
-			sum += F_SPACE, found = 1, *i++;
+			sum += F_SPACE;
 		else if (format[*i] == '#')
-			sum += F_HASH, found = 1, *i++;
+			sum += F_HASH;
 		else if (format[*i] == '0')
-			sum += F_ZERO, found = 1, *i++;
+			sum += F_ZERO;
+		else
+			return (sum);
+		(*i)++;
 	}
-	return (sum);
+}
+/**
+ * get_width - Checks for width sub-specifier
+ * @format: the main printf string
+ * @i: the current index to check in the format string
+ * @list: the list of arguments supplied to the printf function
+ *
+ * Return: width - the amount of padding required for the specifier
+ */
+int get_width(const char *format, int *i, va_list list)
+{
+	int width = 0;
+
+	if (format[*i] == '*')
+	{
+		(*i)++;
+		return (va_arg(list, int));
+	}
+	else
+	{
+		while (format[*i] >= '0' && format[*i] <= '9')
+		{
+			width += format[*i] - '0';
+			width *= 10;
+			(*i)++;
+		}
+		width /= 10;
+	}
+	return (width);
 }
 /**
  * get_precision - Checks for precision sub-specifiers
@@ -41,18 +71,18 @@ int get_precision(const char *format, int *i, va_list list)
 
 	if (format[*i] == '.')
 	{
-		*i++;
+		(*i)++;
 		if (format[*i] == '*')
 		{
-			*i++;
+			(*i)++;
 			return (va_arg(list, int));
 		}
 		else
 		{
 			while (format[*i] >= '0' && format[*i] <= '9')
 			{
-				precision += format[*i];
-				*i++;
+				precision += format[*i] - '0';
+				(*i)++;
 				precision *= 10;
 			}
 			precision /= 10;
@@ -60,35 +90,6 @@ int get_precision(const char *format, int *i, va_list list)
 		}
 	}
 	return (-1);
-}
-/**
- * get_width - Checks for width sub-specifier
- * @format: the main printf string
- * @i: the current index to check in the format string
- * @list: the list of arguments supplied to the printf function
- *
- * Return: width - the amount of padding required for the specifier
- */
-int get_width(const char *format, int *i, va_list list)
-{
-	int width = 0;
-
-	if (format[*i] == *)
-	{
-		*i++;
-		return (va_arg(list, int));
-	}
-	else
-	{
-		while (format[*i] >= '0' && format[*i] <= '9')
-		{
-			width += format[*i] - '0';
-			width *= 10;
-			*i++;
-		}
-		width /= 10;
-	}
-	return (width);
 }
 /**
  * get_size - checks for length modifiers for conversion specifiers
