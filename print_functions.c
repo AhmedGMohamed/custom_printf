@@ -3,6 +3,7 @@
  * print_char - replaces format specifier with formatted input in the buffer
  * @types: a list of arguments supplied with the printf function
  * @buffer: the buffer to output the text to
+ * @i: the current index in the buffer
  * @flags: a summed number representing flags supplied in the format specifier
  * @width: the padding to output to the buffer
  * @precision: the precision value sub-specifer supplied in the format spefier
@@ -34,5 +35,51 @@ int print_char(va_list types, char buffer[], int *i,
 	}
 	else
 		buffer[(*i)++] = (char)va_arg(types, int);
+	return (printed);
+}
+/**
+ * print_string - Replaces string format specifier with formated string
+ * @types: a list of arguments supplied with the printf function
+ * @buffer: the buffer to output the text to
+ * @i: the current index in the buffer
+ * @flags: a summed number representing flags supplied in the format specifier
+ * @width: the padding to output to the buffer
+ * @precision: the precision value sub-specifer supplied in the format spefier
+ * @size: a number specifying long or short sizes
+ *
+ * Return: printed - the number of printed characters to the buffer
+ */
+int print_string(va_list types, char buffer[], int *i,
+	int flags, int width, int precision, int size)
+{
+	int printed = 0, len = 0, it;
+	char *s = va_arg(types, char *);
+
+	UNUSED(precision);
+	UNUSED(size);
+	if (s == NULL)
+		s = "(null)";
+	while (s[len] != '\0')
+		len++;
+	if (width - len > 0)
+	{
+		if ((F_MINUS & flags) == F_MINUS)
+		{
+			for (it = 0; it < len; it++, printed++)
+				buffer[(*i)++] = s[it];
+			for (it = 0; it < width - len; it++, printed++)
+				buffer[(*i)++] = ' ';
+		}
+		else
+		{
+			for (it = 0; it < width - len; it++, printed++)
+				buffer[(*i)++] = ' ';
+			for (it = 0; it < len; it++, printed++)
+				buffer[(*i)++] = s[it];
+		}
+	}
+	else
+		for(it = 0; it < len; it++, printed++)
+			buffer[(*i)++] = s[it];
 	return (printed);
 }
