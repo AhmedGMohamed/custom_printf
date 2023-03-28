@@ -52,21 +52,27 @@ int print_char(va_list types, char buffer[], int *i,
 int print_string(va_list types, char buffer[], int *i,
 	int flags, int width, int precision, int size)
 {
-	int printed = 0, len = 0, it;
-	char *s = va_arg(types, char *);
+	int printed = 0, len = 0, it, j = 0;
+	char *final = va_arg(types, char *), tmp_buff[BUFF_SIZE];
 
 	UNUSED(precision);
 	UNUSED(size);
-	if (s == NULL)
-		s = "(null)";
-	while (s[len] != '\0')
-		len++;
+	if (final == NULL)
+		final = "(null)";
+	while (*final != '\0')
+	{
+		if (*final == '\\')
+			convert_escape(++final, (tmp_buff + j));
+		else
+			tmp_buff[j] = *final;
+		final++, len++, j++;
+	}
 	if (width - len > 0)
 	{
 		if ((F_MINUS & flags) == F_MINUS)
 		{
 			for (it = 0; it < len; it++, printed++)
-				buffer[(*i)++] = s[it];
+				buffer[(*i)++] = tmp_buff[it];
 			for (it = 0; it < width - len; it++, printed++)
 				buffer[(*i)++] = ' ';
 		}
@@ -75,11 +81,11 @@ int print_string(va_list types, char buffer[], int *i,
 			for (it = 0; it < width - len; it++, printed++)
 				buffer[(*i)++] = ' ';
 			for (it = 0; it < len; it++, printed++)
-				buffer[(*i)++] = s[it];
+				buffer[(*i)++] = tmp_buff[it];
 		}
 	}
 	else
-		for(it = 0; it < len; it++, printed++)
-			buffer[(*i)++] = s[it];
+		for (it = 0; it < len; it++, printed++)
+			buffer[(*i)++] = tmp_buff[it];
 	return (printed);
 }

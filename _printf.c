@@ -8,35 +8,40 @@
 
 int _printf(const char *format, ...)
 {
-	int char_printed = 0;
+	int printed = 0, i = 0, f, w, p, s;
+	char buffer[BUFF_SIZE];
 	va_list args;
-	int (*sp_func)(va_list);
+	fmt_t func;
 
 	va_start(args, format);
-
 	if (!format)
 		return (-1);
-
 	while (*format)
 	{
 		if (*format == '%')
 		{
 			format++;
-			sp_func = get_sp_func(format);
-			if (!sp_func)
-			{
-				char_printed += write(1, "%", 1);
-				if (*format)
-					char_printed += write(1, format, 1);
-			}
+			f = get_flags(&format);
+			w = get_width(&format, args);
+			p = get_precision(&format, args);
+			s = get_size(&format);
+			func = get_type(&format);
+			if (func.fmt != 'N')
+				printed += func.fn(args, buffer,
+						&i, f, w, p, s);
 			else
-				char_printed += sp_func(args);
+			{
+				buffer[i++] = *format;
+				printed++;
+			}
 		}
 		else
-			char_printed += write(1, format, 1);
+		{
+			buffer[i++] = *format;
+			printed++;
+		}
 		format++;
 	}
-
 	va_end(args);
-	return (char_printed);
+	return (write(1, buffer, printed));
 }
