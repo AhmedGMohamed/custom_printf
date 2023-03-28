@@ -55,7 +55,6 @@ int print_string(va_list types, char buffer[], int *i,
 	int printed = 0, len = 0, it, j = 0;
 	char *final = va_arg(types, char *), tmp_buff[BUFF_SIZE];
 
-	UNUSED(precision);
 	UNUSED(size);
 	if (final == NULL)
 		final = "(null)";
@@ -67,6 +66,7 @@ int print_string(va_list types, char buffer[], int *i,
 			tmp_buff[j] = *final;
 		final++, len++, j++;
 	}
+	(precision < len && precision != -1) ? (len = precision) : len;
 	if (width - len > 0)
 	{
 		if ((F_MINUS & flags) == F_MINUS)
@@ -87,5 +87,47 @@ int print_string(va_list types, char buffer[], int *i,
 	else
 		for (it = 0; it < len; it++, printed++)
 			buffer[(*i)++] = tmp_buff[it];
+	return (printed);
+}
+/**
+ * print_binary - converts and prints an unsigned int as binary
+ * @types: a list of arguments supplied with the printf function
+ * @buffer: the buffer to output the text to
+ * @i: the current index in the buffer
+ * @flags: a summed number representing flags supplied in the format specifier
+ * @width: the padding to output to the buffer
+ * @precision: the precision value sub-specifer supplied in the format spefier
+ * @size: a number specifying long or short sizes
+ *
+ * Return: printed - the number of printed characters to the buffer
+ */
+int print_binary(va_list types, char buffer[], int *i,
+	int flags, int width, int precision, int size)
+{
+	char tmp_buff[33];
+	int len = 0, printed = 0;
+	unsigned int num = va_arg(types, unsigned int);
+
+	UNUSED(flags);
+	UNUSED(width);
+	UNUSED(precision);
+	UNUSED(size);
+	if (num == 0)
+	{
+		tmp_buff[0] = '0';
+		len++;
+		goto print_to_buff;
+	}
+	while (num > 0)
+	{
+		tmp_buff[len] = num % 2 + '0';
+		num /= 2, len++;
+	}
+print_to_buff:
+	for (len = len - 1; len >= 0; len--)
+	{
+		buffer[(*i)++] = tmp_buff[len];
+		printed++;
+	}
 	return (printed);
 }

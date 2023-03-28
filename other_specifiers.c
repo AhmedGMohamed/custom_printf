@@ -119,8 +119,10 @@ fmt_t get_type(const char **format)
 {
 	int cntr = 0;
 	fmt_t functions[] = {
+		{'%', (*print_char)},
 		{'c', (*print_char)},
 		{'s', (*print_string)},
+		{'b', (*print_binary)},
 		{'N', NULL}
 	};
 

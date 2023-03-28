@@ -27,8 +27,11 @@ int _printf(const char *format, ...)
 			s = get_size(&format);
 			func = get_type(&format);
 			if (func.fmt != 'N')
-				printed += func.fn(args, buffer,
-						&i, f, w, p, s);
+				if (func.fmt == '%')
+					buffer[i++] = '%', printed++;
+				else
+					printed += func.fn(args, buffer,
+							&i, f, w, p, s);
 			else
 			{
 				buffer[i++] = *format;
