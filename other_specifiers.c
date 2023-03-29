@@ -122,6 +122,8 @@ fmt_t get_type(const char **format)
 		{'%', (*print_char)},
 		{'c', (*print_char)},
 		{'s', (*print_string)},
+		{'i', (*print_int)},
+		{'d', (*print_int)},
 		{'b', (*print_binary)},
 		{'N', NULL}
 	};

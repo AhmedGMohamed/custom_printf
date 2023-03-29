@@ -33,16 +33,10 @@ int _printf(const char *format, ...)
 					printed += func.fn(args, buffer,
 							&i, f, w, p, s);
 			else
-			{
-				buffer[i++] = *format;
-				printed++;
-			}
+				buffer[i++] = *format, printed++;
 		}
 		else
-		{
-			buffer[i++] = *format;
-			printed++;
-		}
+			buffer[i++] = *format, printed++;
 		format++;
 	}
 	va_end(args);

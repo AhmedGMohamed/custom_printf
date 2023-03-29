@@ -90,6 +90,59 @@ int print_string(va_list types, char buffer[], int *i,
 	return (printed);
 }
 /**
+ * print_int - Replaces integer format specifier with formated number
+ * @types: a list of arguments supplied with the printf function
+ * @buffer: the buffer to output the text to
+ * @i: the current index in the buffer
+ * @flags: a summed number representing flags supplied in the format specifier
+ * @width: the padding to output to the buffer
+ * @precision: the precision value sub-specifer supplied in the format spefier
+ * @size: a number specifying long or short sizes
+ *
+ * Return: printed - the number of printed characters to the buffer
+ */
+int print_int(va_list types, char buffer[], int *i,
+		int flags, int width, int precision, int size)
+{
+	char tmp_buff[BUFF_SIZE] = { '0' }, sign = '+', padd = ' ';
+	int num = va_arg(types, int), tmp = num, len = 0, it, printed = 0;
+
+	UNUSED(size);
+	if (num < 0)
+		sign = '-';
+	if ((F_ZERO & flags) && !(F_MINUS & flags))
+		padd = '0';
+	num == 0 ? len++ : len;
+	while (tmp)
+		tmp_buff[len] = ABS((tmp % 10)) + '0', tmp /= 10, len++;
+	if (precision != -1)
+	{
+		padd = '0', width = precision;
+		F_PLUS ? width++ : width;
+	}
+	if (F_MINUS & flags && precision == -1)
+	{
+		if ((F_PLUS & flags) || (F_SPACE & flags) || num < 0)
+			buffer[(*i)++] = sign, printed++, len++;
+		for (it = len - 1; it >= 0; it--)
+			buffer[(*i)++] = tmp_buff[it], printed++;
+		for (it = 0; it < width - len; it++)
+			buffer[(*i)++] = padd, printed++;
+		return (printed);
+	}
+	if (((F_ZERO & flags) || precision != -1) &&
+		((F_PLUS & flags) || num < 0))
+		buffer[(*i)++] = sign, printed++, len++;
+	for (it = 0; it < width - len; it++)
+		buffer[(*i)++] = padd, printed++;
+	if (((F_PLUS & flags) || (F_SPACE & flags) || num < 0) &&
+		!((F_ZERO & flags) || precision != -1))
+		buffer[(*i) - 1] = sign;
+	for (it = len - 1; it >= 0; it--)
+		buffer[(*i)++] = tmp_buff[it], printed++;
+	return (printed);
+}
+/**
  * print_binary - converts and prints an unsigned int as binary
  * @types: a list of arguments supplied with the printf function
  * @buffer: the buffer to output the text to
